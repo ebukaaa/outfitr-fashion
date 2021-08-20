@@ -256,7 +256,6 @@ export function useStore() {
               create({
                 styles: {
                   marginBottom: 12,
-                  textAlign: "center",
                 },
               }).styles,
             ],

@@ -2,54 +2,44 @@ import { useStore } from "./utils";
 
 export function useWelcome() {
   const {
-    styles: { appStyles },
+    styles: {
+      topStyles: { containerStyles: topStyles, headerStyles },
+      bottomStyles: {
+        containerStyles: bottomStyles,
+        contentStyles: {
+          containerStyles: contentStyles,
+          titleStyles,
+          descriptionStyles,
+          lastButtonStyles,
+        },
+      },
+    },
     View,
     Text,
+    Button,
+    onNavigate,
   } = useStore();
 
   return (
     <>
-      <View
-        style={{
-          backgroundColor: "grey",
-          borderBottomRightRadius: 75,
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text>out</Text>
+      <View style={topStyles}>
+        <Text style={headerStyles}>out</Text>
       </View>
 
-      <View
-        style={{
-          backgroundColor: "grey",
-          height: "46%",
-        }}
-      >
-        <View
-          style={{
-            backgroundColor: "white",
-            borderTopLeftRadius: 75,
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            paddingHorizontal: 60,
-          }}
-        >
-          <Text>Let&apos;s get Started</Text>
-          <Text
-            style={{
-              textAlign: "center",
-              paddingTop: 10,
-              paddingBottom: 20,
-            }}
-          >
+      <View style={bottomStyles}>
+        <View style={contentStyles}>
+          <Text style={titleStyles}>Let&apos;s get Started</Text>
+          <Text style={descriptionStyles}>
             Login to your account below or signup for an amazing exoerience
           </Text>
-          <Text>Have an account? Login</Text>
-          <Text>Join us, it&apos; Free</Text>
-          <Text>Forgot password</Text>
+
+          <Button
+            variant="primary"
+            label="Have an account? Login"
+            onPress={onNavigate.bind(null, "Login")}
+          />
+          <Button label="Join us, it's Free" />
+          <Button label="Forgot password" style={lastButtonStyles} />
         </View>
       </View>
     </>
