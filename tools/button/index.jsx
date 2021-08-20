@@ -1,6 +1,6 @@
 import { useStore } from "./utils";
 
-export function useButton({ style, label, variant, onPress }) {
+export function useButton({ style, label, children, variant, onPress }) {
   const {
     styles: { buttonStyles, labelStyles },
     RectButton,
@@ -9,7 +9,7 @@ export function useButton({ style, label, variant, onPress }) {
 
   return (
     <RectButton style={buttonStyles} onPress={onPress}>
-      <Text style={labelStyles}>{label}</Text>
+      {!children ? <Text style={labelStyles}>{label}</Text> : children}
     </RectButton>
   );
 }
