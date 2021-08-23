@@ -13,4 +13,4 @@ function load(importPath, props) {
 export const useStatusBar = () => load(import("./status-bar"));
 export const useLayout = (props) => load(import("./layout"), props);
 export const useButton = (props) => load(import("./button"), props);
-export const useSocials = (props) => load(import("./socials"), props);
+export const useInput = (props) => load(import("./input"), props);

@@ -8,3 +8,6 @@ export function lightSeaGreen(opacity) {
 export function cetaceanBlue(opacity) {
   return getColor(opacity, "12,13,52");
 }
+export function redLightNeon(opacity) {
+  return getColor(opacity, "255,0,88");
+}
