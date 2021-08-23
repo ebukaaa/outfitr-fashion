@@ -1,25 +1,43 @@
 import { useMemo } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import Svg, { Path } from "react-native-svg";
+import { lightSeaGreen } from "tools/styles/colors";
 
 export function useStore() {
   const { create } = useMemo(() => StyleSheet, []);
 
   return {
     styles: useMemo(
-      () =>
-        create({
-          appStyles: {
+      () => ({
+        ...create({
+          footerStyles: {
+            flex: 1,
+            justifyContent: "center",
+          },
+          socialsStyles: {
             flexDirection: "row",
             justifyContent: "space-between",
-            paddingHorizontal: 70,
+            paddingHorizontal: 100,
           },
         }),
+        textStyles: create({
+          containerStyles: {
+            color: "white",
+            textAlign: "center",
+            paddingTop: 18,
+            fontFamily: "SFProDisplayRegular",
+          },
+          innerStyles: {
+            color: lightSeaGreen(),
+          },
+        }),
+      }),
       [create]
     ),
     logos: useMemo(() => ["facebook", "google", "apple"], []),
     View,
+    Text,
     FontAwesome,
     Google: useMemo(() => {
       function useGoogle({ size }) {
@@ -75,8 +93,8 @@ export function useStore() {
               containerStyles: {
                 backgroundColor: "white",
                 borderRadius: 22,
-                width: 44,
-                height: 44,
+                width: 40,
+                height: 40,
                 justifyContent: "center",
                 alignItems: "center",
               },
