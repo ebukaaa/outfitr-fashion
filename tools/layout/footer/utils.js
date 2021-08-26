@@ -1,11 +1,22 @@
-import { useMemo } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import Svg, { Path } from "react-native-svg";
 import { lightSeaGreen } from "tools/styles/colors";
 
+let putProps;
+
+export function useProps() {
+  return { putProps };
+}
 export function useStore() {
   const { create } = useMemo(() => StyleSheet, []);
+  const [props, setProps] = useState({
+    label: "Don't have an account",
+    link: "Sign Up here",
+  });
+
+  useMemo(() => (putProps = setProps), []);
 
   return {
     styles: useMemo(
@@ -19,6 +30,7 @@ export function useStore() {
             flexDirection: "row",
             justifyContent: "space-between",
             paddingHorizontal: 100,
+            paddingTop: 5,
           },
         }),
         textStyles: create({
@@ -26,6 +38,7 @@ export function useStore() {
             color: "white",
             textAlign: "center",
             paddingTop: 18,
+            paddingBottom: 9,
             fontFamily: "SFProDisplayRegular",
           },
           innerStyles: {
@@ -36,6 +49,24 @@ export function useStore() {
       [create]
     ),
     logos: useMemo(() => ["facebook", "google", "apple"], []),
+    props,
+    onPress: useCallback((link, onNavigate) => {
+      if (link.match("Sign Up")) {
+        setProps((old) => ({
+          ...old,
+          label: "Already have an account",
+          link: "Login here",
+        }));
+        onNavigate("SignUp");
+        return;
+      }
+      setProps((old) => ({
+        ...old,
+        label: "Don't have an account",
+        link: "Sign Up here",
+      }));
+      onNavigate("Login");
+    }, []),
     View,
     Text,
     FontAwesome,
@@ -83,7 +114,7 @@ export function useStore() {
           </Svg>
         );
       }
-      return useGoogle;
+      return memo(useGoogle);
     }, []),
     Logo: useMemo(() => {
       function useLogo({ children }) {
@@ -104,7 +135,7 @@ export function useStore() {
 
         return <View style={containerStyles}>{children}</View>;
       }
-      return useLogo;
+      return memo(useLogo);
     }, [create]),
   };
 }

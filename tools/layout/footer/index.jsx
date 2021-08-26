@@ -1,6 +1,6 @@
 import { useStore } from "./utils";
 
-export function useFooter({ children }) {
+export function useFooter() {
   const {
     styles: {
       footerStyles,
@@ -8,6 +8,8 @@ export function useFooter({ children }) {
       textStyles: { containerStyles: textStyles, innerStyles },
     },
     logos,
+    props: { label, link, onNavigate, Footer } = {},
+    onPress,
     Logo,
     Google,
     FontAwesome,
@@ -15,7 +17,7 @@ export function useFooter({ children }) {
     Text,
   } = useStore();
 
-  return (
+  return !Footer ? (
     <View style={footerStyles}>
       <View style={socialsStyles}>
         {logos.map((logo) => (
@@ -29,14 +31,11 @@ export function useFooter({ children }) {
         ))}
       </View>
 
-      {!children ? (
-        <Text style={textStyles}>
-          Don&apos;t have an account?{" "}
-          <Text style={innerStyles}>Sign Up here</Text>
-        </Text>
-      ) : (
-        children
-      )}
+      <Text style={textStyles} onPress={onPress.bind(null, link, onNavigate)}>
+        {label}? <Text style={innerStyles}>{link}</Text>
+      </Text>
     </View>
+  ) : (
+    <Footer />
   );
 }

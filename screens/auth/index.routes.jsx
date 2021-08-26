@@ -6,14 +6,14 @@ export function useAuth() {
     screenOptions,
     useOnboarding,
     useWelcome,
-    useLogin,
+    useAccount,
   } = useStore();
 
   return (
     <Navigator screenOptions={screenOptions}>
       <Screen name="Onboarding" component={useOnboarding} />
       <Screen name="Welcome" component={useWelcome} />
-      <Screen name="Login" component={useLogin} />
+      <Screen name="Account" component={useAccount} />
     </Navigator>
   );
 }

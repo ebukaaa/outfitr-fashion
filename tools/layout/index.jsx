@@ -4,7 +4,6 @@ export function useLayout({
   containerStyle,
   contentStyle,
   children,
-  footerChildren,
   Footer: CustomFooter,
 }) {
   const {
@@ -41,10 +40,11 @@ export function useLayout({
           </AnimatedKeyboardAvoidingView>
         </TouchableWithoutFeedback>
 
-        {!CustomFooter ? <Footer>{footerChildren}</Footer> : <CustomFooter />}
+        {!CustomFooter ? <Footer /> : <CustomFooter />}
       </View>
     </View>
   );
 }
 
+export { useProps as useFooterProps } from "./footer/utils";
 export default useLayout;
