@@ -36,9 +36,14 @@ export function useWelcome() {
           <Button
             variant="primary"
             label="Have an account? Login"
-            onPress={onNavigate.bind(null, "Login")}
+            onPress={onNavigate.bind(null, "Account")}
           />
-          <Button label="Join us, it's Free" />
+          <Button
+            label="Join us, it's Free"
+            onPress={onNavigate.bind(null, "Account", {
+              initialRouteName: "SignUp",
+            })}
+          />
           <Button label="Forgot password" style={lastButtonStyles} />
         </View>
       </View>

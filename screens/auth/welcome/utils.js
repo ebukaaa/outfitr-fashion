@@ -76,6 +76,9 @@ export function useStore() {
     View,
     Text,
     Button: useButton,
-    onNavigate: useCallback((screen) => navigate(screen), [navigate]),
+    onNavigate: useCallback(
+      (screen, params) => navigate(screen, params),
+      [navigate]
+    ),
   };
 }

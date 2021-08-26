@@ -1,53 +1,30 @@
-import { useCallback, useLayoutEffect, useMemo, useState } from "react";
+import { memo, useLayoutEffect, useMemo, useState } from "react";
+import { useRoute, useNavigation } from "@react-navigation/native";
 import { StyleSheet, View, Text } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
 import { setStatusBarStyle } from "expo-status-bar";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useLayout, useButton, useInput } from "tools";
+import { useButton, useInput } from "tools";
 import { lightSeaGreen } from "tools/styles/colors";
-import config from "tools/styles/config";
-import { titleStyles, bodyStyles } from "tools/styles/text";
-import {
-  useAnimatedStyle,
-  useSharedValue,
-  withDelay,
-  withSpring,
-  withTiming,
-} from "react-native-reanimated";
+import { bodyStyles } from "tools/styles/text";
 
 export function useStore() {
-  const {
-    create,
-    compose,
-    borderBottomLeftRadius,
-    borderBottomRightRadius,
-    borderTopLeftRadius,
-    borderTopRightRadius,
-  } = {
+  const { create, setOptions } = {
     ...useMemo(() => StyleSheet, []),
-    borderBottomLeftRadius: useSharedValue(75),
-    borderBottomRightRadius: useSharedValue(0),
-    borderTopLeftRadius: useSharedValue(0),
-    borderTopRightRadius: useSharedValue(75),
-  };
-  const { animatedContainerStyles, animatedContentStyles } = {
-    animatedContainerStyles: useAnimatedStyle(() => ({
-      borderBottomLeftRadius: withSpring(borderBottomLeftRadius.value, config),
-      borderBottomRightRadius: withSpring(
-        borderBottomRightRadius.value,
-        config
-      ),
-    })),
-    animatedContentStyles: useAnimatedStyle(() => ({
-      borderTopLeftRadius: withSpring(borderTopLeftRadius.value, config),
-      borderTopRightRadius: withSpring(borderTopRightRadius.value, config),
-    })),
+    ...useRoute(),
+    ...useNavigation(),
   };
 
   useLayoutEffect(() => {
     setStatusBarStyle("light");
     return setStatusBarStyle.bind(null, "dark");
-  });
+  }, []);
+
+  useLayoutEffect(() => {
+    setOptions({
+      headerTitle: "Welcome back",
+    });
+  }, [setOptions]);
 
   return {
     styles: useMemo(
@@ -57,27 +34,6 @@ export function useStore() {
             alignSelf: "center",
           },
         }),
-        layoutStyles: {
-          contentStyles: compose(
-            create({
-              styles: {
-                paddingHorizontal: 40,
-                paddingBottom: 30,
-                paddingTop: 40,
-              },
-            }).styles,
-            animatedContentStyles
-          ),
-          containerStyles: compose(animatedContainerStyles),
-        },
-        titleStyles: [
-          titleStyles(2),
-          create({
-            styles: {
-              textAlign: "center",
-            },
-          }).styles,
-        ],
         subTitleStyles: [
           bodyStyles,
           create({
@@ -99,7 +55,7 @@ export function useStore() {
           },
         }),
       }),
-      [animatedContainerStyles, animatedContentStyles, compose, create]
+      [create]
     ),
     inputs: useMemo(
       () => [
@@ -133,10 +89,7 @@ export function useStore() {
       ],
       []
     ),
-    View,
-    Text,
     Input: useInput,
-    Layout: useLayout,
     Button: useButton,
     Checkbox: useMemo(() => {
       function useCheckbox() {
@@ -188,18 +141,9 @@ export function useStore() {
           </RectButton>
         );
       }
-      return useCheckbox;
+      return memo(useCheckbox);
     }, [create]),
-    onLogin: useCallback(() => {
-      borderBottomLeftRadius.value = 0;
-      borderTopLeftRadius.value = withDelay(200, withTiming(75));
-      borderTopRightRadius.value = withDelay(300, withTiming(0));
-      borderBottomRightRadius.value = withDelay(600, withTiming(75));
-    }, [
-      borderBottomLeftRadius,
-      borderBottomRightRadius,
-      borderTopLeftRadius,
-      borderTopRightRadius,
-    ]),
+    View,
+    Text,
   };
 }
