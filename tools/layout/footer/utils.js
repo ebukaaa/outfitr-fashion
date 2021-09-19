@@ -1,5 +1,5 @@
 import { memo, useCallback, useMemo, useState } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, Linking } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import Svg, { Path } from "react-native-svg";
 import { lightSeaGreen } from "tools/styles/colors";
@@ -50,26 +50,6 @@ export function useStore() {
     ),
     logos: useMemo(() => ["facebook", "google", "apple"], []),
     props,
-    onPress: useCallback((link, onNavigate) => {
-      if (link.match("Sign Up")) {
-        setProps((old) => ({
-          ...old,
-          label: "Already have an account",
-          link: "Login here",
-        }));
-        onNavigate("SignUp");
-        return;
-      }
-      setProps((old) => ({
-        ...old,
-        label: "Don't have an account",
-        link: "Sign Up here",
-      }));
-      onNavigate("Login");
-    }, []),
-    View,
-    Text,
-    FontAwesome,
     Google: useMemo(() => {
       function useGoogle({ size }) {
         return (
@@ -137,5 +117,27 @@ export function useStore() {
       }
       return memo(useLogo);
     }, [create]),
+    View,
+    Text,
+    FontAwesome,
+    onPress: useCallback((link, onNavigate) => {
+      if (link.match("Sign Up")) {
+        setProps((old) => ({
+          ...old,
+          label: "Already have an account",
+          link: "Login here",
+        }));
+        onNavigate("SignUp");
+      } else if (link.match("Login")) {
+        setProps((old) => ({
+          ...old,
+          label: "Don't have an account",
+          link: "Sign Up here",
+        }));
+        onNavigate("Login");
+      } else {
+        Linking.openURL("mailto:help@support.com");
+      }
+    }, []),
   };
 }

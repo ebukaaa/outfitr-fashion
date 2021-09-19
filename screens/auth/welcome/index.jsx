@@ -44,7 +44,13 @@ export function useWelcome() {
               initialRouteName: "SignUp",
             })}
           />
-          <Button label="Forgot password" style={lastButtonStyles} />
+          <Button
+            label="Forgot password"
+            style={lastButtonStyles}
+            onPress={onNavigate.bind(null, "Account", {
+              initialRouteName: "Forgot",
+            })}
+          />
         </View>
       </View>
     </>

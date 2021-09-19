@@ -1,11 +1,6 @@
 import { useStore } from "./utils";
 
-export function useLayout({
-  containerStyle,
-  contentStyle,
-  children,
-  Footer: CustomFooter,
-}) {
+export function useLayout({ containerStyle, contentStyle, children }) {
   const {
     styles: {
       containerStyles,
@@ -15,34 +10,27 @@ export function useLayout({
     Animated,
     View,
     TouchableWithoutFeedback,
-    AnimatedKeyboardAvoidingView,
     Cover,
     Footer,
     onDismissKeyboard,
   } = useStore({ containerStyle, contentStyle });
 
   return (
-    <View style={containerStyles}>
-      <Animated.View style={wrapperStyles}>
-        <Cover />
+    <TouchableWithoutFeedback onPress={onDismissKeyboard}>
+      <Animated.View style={containerStyles}>
+        <Animated.View style={wrapperStyles}>
+          <Cover />
+        </Animated.View>
+
+        <View style={childrenStyles}>
+          <Cover style={coverStyles} />
+
+          <Animated.View style={contentStyles}>{children}</Animated.View>
+
+          <Footer />
+        </View>
       </Animated.View>
-
-      <View style={childrenStyles}>
-        <Cover style={coverStyles} />
-
-        <TouchableWithoutFeedback onPress={onDismissKeyboard}>
-          <AnimatedKeyboardAvoidingView
-            behavior="height"
-            style={contentStyles}
-            keyboardVerticalOffset={10}
-          >
-            {children}
-          </AnimatedKeyboardAvoidingView>
-        </TouchableWithoutFeedback>
-
-        {!CustomFooter ? <Footer /> : <CustomFooter />}
-      </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 

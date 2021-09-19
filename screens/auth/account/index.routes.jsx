@@ -11,6 +11,8 @@ export function useAccount() {
     Layout,
     useLogin,
     useSignUp,
+    useForgot,
+    useSuccess,
   } = useStore();
 
   return (
@@ -21,6 +23,8 @@ export function useAccount() {
       >
         <Screen name="Login" component={useLogin} />
         <Screen name="SignUp" component={useSignUp} />
+        <Screen name="Forgot" component={useForgot} />
+        <Screen name="Success" component={useSuccess} />
       </Navigator>
     </Layout>
   );

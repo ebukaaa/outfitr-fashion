@@ -1,6 +1,6 @@
-import { memo, useCallback, useEffect, useMemo } from "react";
+import { memo, useCallback, useEffect, useLayoutEffect, useMemo } from "react";
 import { useRoute, useNavigation } from "@react-navigation/native";
-import { StyleSheet } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import {
   useAnimatedStyle,
   useSharedValue,
@@ -11,20 +11,22 @@ import {
 import { createNativeStackNavigator } from "react-native-screens/native-stack";
 import { useLayout, useFooterProps as footerProps } from "tools/layout";
 import config from "tools/styles/config";
-import { titleStyles } from "tools/styles/text";
+import { EvilIcons } from "@expo/vector-icons";
+import { setStatusBarStyle } from "expo-status-bar";
 import { useLogin as Login } from "./login";
 import { useSignUp } from "./sign-up";
+import { useForgot as Forgot } from "./forgot";
+import { useSuccess as Success } from "./success";
 
 export function useStore() {
   const {
     navigate,
-    params: { initialRouteName } = { initialRouteName: "Login" },
+    create,
+    params: { initialRouteName = "Login" } = {},
     borderBottomLeftRadius,
     borderBottomRightRadius,
     borderTopLeftRadius,
     borderTopRightRadius,
-    create,
-    compose,
   } = {
     ...useNavigation(),
     ...useRoute(),
@@ -34,7 +36,12 @@ export function useStore() {
     borderTopRightRadius: useSharedValue(75),
     borderBottomRightRadius: useSharedValue(0),
   };
-  const { animatedContainerStyles, animatedContentStyles, onChange } = {
+  const {
+    animatedContainerStyles,
+    animatedContentStyles,
+    onChangeView,
+    onGoBack,
+  } = {
     animatedContainerStyles: useAnimatedStyle(() => ({
       borderBottomLeftRadius: withSpring(borderBottomLeftRadius.value, config),
       borderBottomRightRadius: withSpring(
@@ -46,84 +53,146 @@ export function useStore() {
       borderTopLeftRadius: withSpring(borderTopLeftRadius.value, config),
       borderTopRightRadius: withSpring(borderTopRightRadius.value, config),
     })),
-    onChange: useCallback(
-      (screen, shouldNavigate = true) => {
+    onChangeView: useMemo(() => {
+      function animate({
+        borderBottomLeftRadius: {
+          value: bottomLeftValue,
+          delay: bottomLeftDelay,
+        } = {},
+        borderBottomRightRadius: {
+          value: bottomRightValue,
+          delay: bottomRightDelay,
+        } = {},
+        borderTopLeftRadius: { value: topLeftValue, delay: topLeftDelay } = {},
+        borderTopRightRadius: {
+          value: topRightValue,
+          delay: topRightDelay,
+        } = {},
+      }) {
+        if (bottomLeftDelay) {
+          borderBottomLeftRadius.value = withDelay(
+            bottomLeftDelay,
+            withTiming(bottomLeftValue)
+          );
+        } else {
+          borderBottomLeftRadius.value = bottomLeftValue;
+        }
+        if (bottomRightDelay) {
+          borderBottomRightRadius.value = withDelay(
+            bottomRightDelay,
+            withTiming(bottomRightValue)
+          );
+        } else {
+          borderBottomRightRadius.value = bottomRightValue;
+        }
+        borderTopLeftRadius.value = withDelay(
+          topLeftDelay,
+          withTiming(topLeftValue)
+        );
+        borderTopRightRadius.value = withDelay(
+          topRightDelay,
+          withTiming(topRightValue)
+        );
+      }
+      return (screen, shouldNavigate = true) => {
         if (screen === "SignUp") {
-          borderBottomLeftRadius.value = 0;
-          borderTopLeftRadius.value = withDelay(200, withTiming(75));
-          borderTopRightRadius.value = withDelay(300, withTiming(0));
-          borderBottomRightRadius.value = withDelay(600, withTiming(75));
+          animate({
+            borderBottomLeftRadius: { delay: 1, value: 0 },
+            borderTopLeftRadius: { delay: 350, value: 75 },
+            borderTopRightRadius: { delay: 300, value: 0 },
+            borderBottomRightRadius: { delay: 600, value: 75 },
+          });
+        } else if (screen === "Forgot") {
+          animate({
+            borderBottomRightRadius: { value: 0 },
+            borderBottomLeftRadius: { delay: 100, value: 0 },
+            borderTopRightRadius: { delay: 200, value: 75 },
+            borderTopLeftRadius: { delay: 300, value: 75 },
+          });
         } else if (screen === "Login") {
-          borderBottomRightRadius.value = 0;
-          borderTopRightRadius.value = withDelay(200, withTiming(75));
-          borderTopLeftRadius.value = withDelay(300, withTiming(0));
-          borderBottomLeftRadius.value = withDelay(600, withTiming(75));
+          animate({
+            borderBottomRightRadius: { delay: 1, value: 0 },
+            borderTopRightRadius: { delay: 350, value: 75 },
+            borderTopLeftRadius: { delay: 300, value: 0 },
+            borderBottomLeftRadius: { delay: 600, value: 75 },
+          });
         }
 
         if (shouldNavigate) {
           navigate(screen);
         }
-      },
-      [
-        borderBottomLeftRadius,
-        borderBottomRightRadius,
-        borderTopLeftRadius,
-        borderTopRightRadius,
-        navigate,
-      ]
-    ),
+      };
+    }, [
+      borderBottomLeftRadius,
+      borderBottomRightRadius,
+      borderTopLeftRadius,
+      borderTopRightRadius,
+      navigate,
+    ]),
+    onGoBack: useCallback(() => {
+      footerProps().putProps((old) => ({
+        ...old,
+        label: "Don't have an account",
+        link: "Sign Up here",
+        Footer: null,
+      }));
+      navigate("Login");
+    }, [navigate]),
   };
 
+  useLayoutEffect(() => {
+    setStatusBarStyle("light");
+    return setStatusBarStyle.bind(null, "dark");
+  }, []);
+
   useEffect(() => {
-    const { putProps } = footerProps();
+    const { putProps: putFooterProps } = footerProps();
 
-    onChange(initialRouteName, false);
+    onChangeView(initialRouteName, false);
 
-    if (initialRouteName === "Login" || !initialRouteName) {
-      putProps((old) => ({
+    if (initialRouteName === "Login") {
+      putFooterProps((old) => ({
         ...old,
-        onNavigate: onChange,
+        onNavigate: onChangeView,
       }));
     } else if (initialRouteName === "SignUp") {
-      putProps((old) => ({
+      putFooterProps((old) => ({
         ...old,
         label: "Already have an account",
         link: "Login here",
-        onNavigate: onChange,
+        onNavigate: onChangeView,
+      }));
+    } else if (initialRouteName === "Forgot") {
+      putFooterProps((old) => ({
+        ...old,
+        label: "Didn't work",
+        link: "Try another way",
+        onNavigate: onChangeView,
       }));
     }
-  }, [initialRouteName, onChange]);
+  }, [initialRouteName, onChangeView]);
 
   return {
     styles: useMemo(
       () => ({
         layoutStyles: {
-          contentStyle: compose(
-            create({
-              styles: {
-                paddingTop: 40,
-              },
-            }).styles,
-            animatedContentStyles
-          ),
-          containerStyle: compose(animatedContainerStyles),
+          contentStyle: animatedContentStyles,
+          containerStyle: animatedContainerStyles,
         },
       }),
-      [animatedContainerStyles, animatedContentStyles, compose, create]
+      [animatedContainerStyles, animatedContentStyles]
     ),
     stack: useMemo(() => createNativeStackNavigator(), []),
     screenOptions: useMemo(
       () => ({
-        headerHideShadow: true,
-        headerHideBackButton: true,
+        stackAnimation: "fade",
         gestureEnabled: false,
-        headerTitleStyle: titleStyles(2),
+        headerShown: false,
         contentStyle: create({
           styles: {
             backgroundColor: "white",
-            justifyContent: "space-between",
             paddingHorizontal: 40,
-            paddingBottom: 30,
+            justifyContent: "center",
           },
         }).styles,
       }),
@@ -131,7 +200,68 @@ export function useStore() {
     ),
     initialRouteName,
     Layout: useMemo(() => memo(useLayout, () => true), []),
-    useLogin: useCallback(() => <Login onNavigate={onChange} />, [onChange]),
+    useLogin: useCallback(
+      () => (
+        <Login
+          onChangeView={(screen) => {
+            footerProps().putProps((old) => ({
+              ...old,
+              label: "Didn't work",
+              link: "Try another way",
+            }));
+            onChangeView(screen);
+          }}
+        />
+      ),
+      [onChangeView]
+    ),
     useSignUp,
+    useForgot: useCallback(
+      () => (
+        <Forgot
+          onChangeView={() => {
+            onChangeView("Login", false);
+            footerProps().putProps((old) => ({
+              ...old,
+              Footer() {
+                const { logoStyles, footerStyles } = useMemo(
+                  () => ({
+                    ...create({
+                      footerStyles: {
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      },
+                      logoStyles: {
+                        backgroundColor: "white",
+                        height: 54,
+                        width: 54,
+                        borderRadius: 75,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      },
+                    }),
+                  }),
+                  []
+                );
+                return (
+                  <View style={footerStyles}>
+                    <TouchableOpacity style={logoStyles} onPress={onGoBack}>
+                      <EvilIcons name="close" size={32} />
+                    </TouchableOpacity>
+                  </View>
+                );
+              },
+            }));
+            navigate("Success");
+          }}
+        />
+      ),
+      [create, navigate, onChangeView, onGoBack]
+    ),
+    useSuccess: useCallback(
+      () => <Success onChangeView={onGoBack} />,
+      [onGoBack]
+    ),
   };
 }

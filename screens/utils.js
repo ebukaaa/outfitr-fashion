@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from "react-native-screens/native-stack";
 import { useMemo } from "react";
 import { useAuth } from "./auth/index.routes";
+import { useDashboard } from "./dashboard/index.routes";
 
 export function useStore() {
   return {
@@ -12,5 +13,6 @@ export function useStore() {
       []
     ),
     useAuth,
+    useDashboard,
   };
 }

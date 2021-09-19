@@ -11,6 +11,7 @@ export function useStore() {
     SFProDisplayRegular: require("assets/fonts/sf-pro-display/Regular.otf"),
     SFProDisplaySemibold: require("assets/fonts/sf-pro-display/Semibold.otf"),
   });
+
   return {
     isLoaded,
     Text,
