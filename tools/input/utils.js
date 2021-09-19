@@ -3,6 +3,7 @@ import { StyleSheet, View, TextInput } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { lightSeaGreen, redLightNeon } from "tools/styles/colors";
 
+export { forwardRef } from "react";
 export function useStore({ style, onValidate }) {
   const [isValid, setValid] = useState(null);
   const { create, iconTintColor } = useMemo(
@@ -38,6 +39,7 @@ export function useStore({ style, onValidate }) {
               borderWidth: 1,
               borderColor,
               padding: 10,
+              marginBottom: 20,
             },
           }).styles,
           style,
@@ -57,10 +59,14 @@ export function useStore({ style, onValidate }) {
       ),
     },
     isValid,
-    onBlur: useCallback(
-      ({ nativeEvent: { text } }) => {
+    onCheckText: useCallback(
+      (placeholder, { nativeEvent: { text } }) => {
         if (!text) {
           setValid(null);
+          return;
+        }
+        if (placeholder.match("password")) {
+          setTimeout(() => setValid(onValidate(text.trim())), 500);
           return;
         }
         setValid(onValidate(text.trim()));

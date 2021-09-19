@@ -1,47 +1,66 @@
-import { useStore } from "./utils";
+import { forwardRef, useStore } from "./utils";
 
-export function useInput({
-  style,
-  icon,
-  placeholder,
-  keyboardType,
-  autoCapitalize,
-  textContentType,
-  onValidate,
-}) {
-  const {
-    styles: { containerStyles, inputStyles, placeholderTextColor },
-    isValid,
-    onBlur,
-    onCheckColor,
-    View,
-    TextInput,
-    MaterialIcons,
-  } = useStore({ style, onValidate });
+export const useInput = forwardRef(
+  (
+    {
+      style,
+      icon,
+      placeholder,
+      keyboardType,
+      autoCapitalize,
+      textContentType,
+      returnKeyType,
+      onValidate,
+      onChangeText,
+      onSubmitEditing,
+    },
+    ref
+  ) => {
+    const {
+      styles: { containerStyles, inputStyles, placeholderTextColor },
+      isValid,
+      onCheckText,
+      onCheckColor,
+      View,
+      TextInput,
+      MaterialIcons,
+    } = useStore({ style, onValidate });
 
-  return (
-    <View style={containerStyles}>
-      <MaterialIcons name={icon} size={15} color={onCheckColor(isValid)} />
+    // useEffect(() => {
+    //   console.log(ref?.current?.focus);
+    // }, [ref]);
 
-      <TextInput
-        style={inputStyles}
-        placeholder={placeholder}
-        placeholderTextColor={placeholderTextColor}
-        keyboardType={!keyboardType ? "default" : keyboardType}
-        textContentType={textContentType}
-        autoCapitalize={!autoCapitalize ? "none" : autoCapitalize}
-        onBlur={onBlur}
-        secureTextEntry={!!placeholder.match("password")}
-      />
+    return (
+      <View style={containerStyles}>
+        <MaterialIcons name={icon} size={15} color={onCheckColor(isValid)} />
 
-      {isValid !== null && (
-        <MaterialIcons
-          name={isValid ? "check-circle" : isValid === false && "cancel"}
-          size={20}
-          color={onCheckColor(isValid)}
+        <TextInput
+          style={inputStyles}
+          ref={ref}
+          placeholder={placeholder}
+          placeholderTextColor={placeholderTextColor}
+          keyboardType={!keyboardType ? "default" : keyboardType}
+          textContentType={textContentType}
+          autoCapitalize={!autoCapitalize ? "none" : autoCapitalize}
+          secureTextEntry={!!placeholder.match("password")}
+          returnKeyType={returnKeyType}
+          onBlur={onCheckText.bind(this, placeholder)}
+          onChange={onCheckText.bind(this, placeholder)}
+          onChangeText={
+            onChangeText && onChangeText.bind(this, textContentType)
+          }
+          onSubmitEditing={onSubmitEditing}
         />
-      )}
-    </View>
-  );
-}
+
+        {isValid !== null && (
+          <MaterialIcons
+            name={isValid ? "check-circle" : isValid === false && "cancel"}
+            size={20}
+            color={onCheckColor(isValid)}
+          />
+        )}
+      </View>
+    );
+  }
+);
 export default useInput;

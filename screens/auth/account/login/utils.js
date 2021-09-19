@@ -1,30 +1,19 @@
-import { memo, useLayoutEffect, useMemo, useState } from "react";
-import { useRoute, useNavigation } from "@react-navigation/native";
+import { memo, useCallback, useMemo, useRef, useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
-import { setStatusBarStyle } from "expo-status-bar";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useButton, useInput } from "tools";
 import { lightSeaGreen } from "tools/styles/colors";
-import { bodyStyles } from "tools/styles/text";
+import { bodyStyles, titleStyles } from "tools/styles/text";
+import { validateEmail, validatePassword } from "tools/validation";
+import { useNavigation } from "@react-navigation/native";
 
 export function useStore() {
-  const { create, setOptions } = {
-    ...useMemo(() => StyleSheet, []),
-    ...useRoute(),
+  const { create, navigate, ref } = {
     ...useNavigation(),
+    ...useMemo(() => StyleSheet, []),
+    ref: useRef(),
   };
-
-  useLayoutEffect(() => {
-    setStatusBarStyle("light");
-    return setStatusBarStyle.bind(null, "dark");
-  }, []);
-
-  useLayoutEffect(() => {
-    setOptions({
-      headerTitle: "Welcome back",
-    });
-  }, [setOptions]);
 
   return {
     styles: useMemo(
@@ -34,13 +23,22 @@ export function useStore() {
             alignSelf: "center",
           },
         }),
+        titleStyles: [
+          titleStyles(2),
+          create({
+            styles: {
+              textAlign: "center",
+              paddingBottom: 20,
+            },
+          }).styles,
+        ],
         subTitleStyles: [
           bodyStyles,
           create({
             styles: {
               textAlign: "center",
               paddingHorizontal: "8%",
-              paddingBottom: 10,
+              paddingBottom: 20,
             },
           }).styles,
         ],
@@ -48,6 +46,7 @@ export function useStore() {
           containerStyles: {
             flexDirection: "row",
             justifyContent: "space-between",
+            paddingBottom: 20,
           },
           forgotPasswordStyles: {
             color: lightSeaGreen(),
@@ -64,30 +63,23 @@ export function useStore() {
           keyboardType: "email-address",
           textContentType: "emailAddress",
           icon: "mail-outline",
-          onValidate(email) {
-            return /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-              String(email).toLowerCase()
-            );
+          returnKeyType: "next",
+          onSubmitEditing() {
+            ref?.current?.focus();
           },
+          onValidate: validateEmail,
         },
         {
           id: "Enter your password",
           textContentType: "password",
           icon: "lock-outline",
-          onValidate(password) {
-            if (
-              password.match(/[a-z]/g) &&
-              password.match(/[A-Z]/g) &&
-              password.match(/[0-9]/g) &&
-              password.length >= 8
-            ) {
-              return true;
-            }
-            return false;
-          },
+          returnKeyType: "send",
+          ref,
+          onSubmitEditing() {},
+          onValidate: validatePassword,
         },
       ],
-      []
+      [ref]
     ),
     Input: useInput,
     Button: useButton,
@@ -145,5 +137,6 @@ export function useStore() {
     }, [create]),
     View,
     Text,
+    onNavigate: useCallback(() => navigate("Dashboard"), [navigate]),
   };
 }

@@ -2,7 +2,7 @@ import "react-native-gesture-handler";
 import { useStore } from "./utils";
 
 export default function App() {
-  const { isLoaded, Text, StatusBar, NavigationContainer, Screens } =
+  const { isLoaded, StatusBar, Text, NavigationContainer, Screens } =
     useStore();
 
   return !isLoaded ? (

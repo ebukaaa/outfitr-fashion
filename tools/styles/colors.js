@@ -11,3 +11,9 @@ export function cetaceanBlue(opacity) {
 export function redLightNeon(opacity) {
   return getColor(opacity, "255,0,88");
 }
+export function magicMint(opacity) {
+  return getColor(opacity, "180,238,192");
+}
+export function paleBule(opacity) {
+  return getColor(opacity, "177,236,247");
+}

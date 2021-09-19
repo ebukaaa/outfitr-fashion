@@ -2,7 +2,7 @@ export default {
   name: "outfitr-fashion",
   description: "Using Outfitr UI design",
   slug: "outfitr-fashion",
-  version: "2.2.0",
+  version: "3.0.0",
   orientation: "portrait",
   icon: "./assets/icon.png",
   splash: {
