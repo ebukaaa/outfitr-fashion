@@ -2,7 +2,7 @@ export default {
   name: "outfitr-fashion",
   description: "Using Outfitr UI design",
   slug: "outfitr-fashion",
-  version: "3.0.0",
+  version: "3.1.0",
   orientation: "portrait",
   icon: "./assets/icon.png",
   splash: {
@@ -25,5 +25,8 @@ export default {
   },
   web: {
     favicon: "./assets/favicon.png",
+  },
+  expo: {
+    orientation: "portrait",
   },
 };
