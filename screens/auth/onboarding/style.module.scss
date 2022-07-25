@@ -1,0 +1,56 @@
+@import "styles/utils";
+
+.topScroll {
+  height: 61%;
+  border-bottom-right-radius: 75px;
+  border-color: transparent;
+}
+.bottomScroll {
+  position: relative;
+}
+.pagination {
+  height: 40px;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+  align-self: center;
+  position: absolute;
+}
+.footer {
+  background-color: white;
+  height: 39%;
+  border-top-left-radius: 75px;
+  border-color: transparent;
+}
+
+.topSlide {
+  justify-content: center;
+}
+.title {
+  @include useTitle;
+  transform: rotate(-90deg);
+}
+
+.dot {
+  @include useColor($lightSeaGreen);
+  border-radius: 4px;
+  height: 6px;
+  width: 6px;
+  margin: 4px;
+}
+
+.bottomSlide {
+  padding: 24px;
+  justify-content: center;
+  align-items: center;
+}
+.subtitle {
+  @include useHeading("sub");
+  margin-bottom: 12px;
+}
+.description {
+  @include useBody;
+  margin-bottom: 40px;
+  text-align: center;
+}

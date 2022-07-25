@@ -1,0 +1,9 @@
+.message {
+  @import "styles/utils";
+  @include useHeading("sub", false);
+  text-align: center;
+  top: 50%;
+}
+.app {
+  flex: 1;
+}

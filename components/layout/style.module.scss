@@ -1,0 +1,55 @@
+@import "styles/utils";
+
+.container {
+  flex: 1;
+  background-color: white;
+}
+.wrapper {
+  overflow: hidden;
+  border-color: transparent;
+  height: 20%;
+}
+.children {
+  @include useColor($cetaceanBlue);
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+.cover {
+  top: -25%;
+  position: absolute;
+}
+.content {
+  height: 78%;
+  border-radius: 75px;
+  background-color: white;
+  overflow: hidden;
+  justify-content: space-between;
+}
+
+.footer {
+  flex: 1;
+  justify-content: center;
+}
+.social {
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 5px 100px 0 100px;
+}
+.logo {
+  background-color: white;
+  border-radius: 22px;
+  width: 40px;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+}
+.outerText {
+  color: white;
+  text-align: center;
+  padding: 18px 0 9px 0;
+  font-family: SFProDisplayRegular;
+}
+.innerText {
+  @include useColor($lightSeaGreen, $type: color);
+}

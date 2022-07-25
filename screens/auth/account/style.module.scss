@@ -1,0 +1,25 @@
+@import "styles/utils";
+
+.account {
+  @include useColor($cetaceanBlue);
+}
+.content {
+  background-color: white;
+  padding: 0 40px;
+  justify-content: center;
+}
+
+.footer {
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+}
+.logo {
+  $size: 54px;
+  height: $size;
+  width: $size;
+  background-color: white;
+  border-radius: 75px;
+  justify-content: center;
+  align-items: center;
+}

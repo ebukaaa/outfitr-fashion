@@ -1,0 +1,16 @@
+@import "styles/utils";
+
+.title {
+  @include useHeading("sub");
+  text-align: center;
+  padding-bottom: 20px;
+}
+.body {
+  @include useBody;
+  text-align: center;
+  padding: 0 8% 20px 8%;
+}
+
+.button {
+  align-self: center;
+}
