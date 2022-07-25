@@ -1,0 +1,39 @@
+$lightSeaGreen: #2cb9b0;
+$cetaceanBlue: #0c0d34;
+$redLightNeon: #ff0058;
+$magicMint: #b4eec0;
+$paleBlue: #b1ecf7;
+
+@mixin useColor($name: black, $opacity: 1, $type: background-color) {
+  #{$type}: rgba($name, $opacity);
+}
+@mixin useHeading($style: "main", $font-family: SFProDisplaySemibold) {
+  @include useColor($cetaceanBlue, $type: color);
+
+  @if $style == "main" {
+    font-size: 28px;
+  } @else {
+    font-size: 24px;
+    line-height: 30px;
+  }
+  @if $font-family != false {
+    font-family: $font-family;
+  }
+}
+@mixin useBody {
+  @include useColor($cetaceanBlue, 0.7, $type: color);
+  font-size: 16px;
+  line-height: 24px;
+  font-family: SFProDisplayRegular;
+}
+@mixin useTitle {
+  @include useColor(white, $type: color);
+  font-size: 70px;
+  line-height: 80px;
+  font-family: SFProDisplayBold;
+  text-align: center;
+}
+@mixin useLabel {
+  font-size: 15px;
+  font-family: SFProDisplayMedium;
+}

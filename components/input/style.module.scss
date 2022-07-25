@@ -1,0 +1,39 @@
+@import "styles/utils";
+.input {
+  flex-direction: row;
+  align-items: center;
+  border-radius: 5px;
+  border-width: 1px;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+.trueTint {
+  @include useColor($lightSeaGreen, $type: border-color);
+}
+.falseTint {
+  @include useColor($redLightNeon, $type: border-color);
+}
+.normalTint {
+  border-color: #8a8d90;
+}
+.undefinedTint {
+  border-color: #eee;
+}
+
+.text {
+  padding: 0 10px;
+  flex: 1;
+}
+
+.trueIcon {
+  @include useColor($lightSeaGreen, $type: color);
+}
+.falseIcon {
+  @include useColor($redLightNeon, $type: color);
+}
+.normalIcon {
+  color: #8a8d90;
+}
+.undefinedIcon {
+  color: #eee;
+}

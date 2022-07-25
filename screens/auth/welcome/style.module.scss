@@ -1,0 +1,40 @@
+@import "styles/utils";
+
+.top {
+  background-color: #f4f0ef;
+  border-bottom-right-radius: 75px;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+.header {
+  color: white;
+  font-family: SFProDisplayBold;
+  transform: scale(1.4);
+}
+
+.bottom {
+  background-color: #f4f0ef;
+  height: 46%;
+}
+.wrapper {
+  background-color: white;
+  border-top-left-radius: 75px;
+  flex: 1;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 0 60px;
+}
+.title {
+  @include useHeading("sub");
+  padding: 12px 0;
+}
+.body {
+  @include useBody;
+  text-align: center;
+  padding-bottom: 18px;
+}
+.forgot {
+  background-color: transparent;
+}

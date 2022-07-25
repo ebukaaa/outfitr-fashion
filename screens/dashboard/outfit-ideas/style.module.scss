@@ -1,0 +1,138 @@
+@import "styles/utils";
+
+.outfitIdeas {
+  @include useColor($cetaceanBlue);
+  flex: 1;
+  position: relative;
+}
+.content {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+.list {
+  padding: 0 8%;
+}
+.feed {
+  @include useColor($magicMint);
+  $size: 80px;
+  height: $size;
+  width: $size;
+  border-radius: 40px;
+}
+.cards {
+  flex: 0.8;
+  position: relative;
+}
+
+.headerLeft {
+  padding-left: 15px;
+}
+.button {
+  $size: 44px;
+  height: $size;
+  width: $size;
+  background-color: #fafafa;
+  justify-content: center;
+  align-items: center;
+  border-radius: 22px;
+  overflow: hidden;
+}
+.bar {
+  background-color: black;
+  width: 18px;
+  height: 1.8px;
+}
+.bottomBar {
+  margin-top: 4px;
+}
+
+.headerRight {
+  padding-right: 15px;
+}
+.badge {
+  @include useColor($lightSeaGreen);
+  $size: 13px;
+  $position: 5px;
+  height: $size;
+  width: $size;
+  right: $position;
+  top: $position;
+  position: absolute;
+  justify-content: center;
+  border-radius: 6.5px;
+}
+.label {
+  font-size: 6.5px;
+  color: white;
+  text-align: center;
+}
+
+.header {
+  flex: 0.4;
+  position: relative;
+}
+.top {
+  flex: 0.5;
+  background-color: white;
+}
+.bottom {
+  @include useColor($paleBlue);
+  flex: 0.5;
+  overflow: hidden;
+}
+.contentOverlay {
+  border-bottom-right-radius: 75px;
+  background-color: white;
+}
+
+.body {
+  flex: 0.35;
+  position: relative;
+}
+.contentBody {
+  @include useColor($paleBlue);
+  overflow: hidden;
+  border-top-left-radius: 75px;
+}
+.topCover {
+  transform: rotate(180deg);
+}
+.bottomCover {
+  top: -6px;
+  transform: rotateX(180deg);
+}
+
+.footer {
+  @include useColor($paleBlue);
+  flex: 0.25;
+  overflow: hidden;
+  position: relative;
+}
+.coverFooter {
+  position: absolute;
+  top: -29px;
+  transform: rotateX(180deg);
+}
+.contentFooter {
+  @include useColor($cetaceanBlue);
+  flex: 1;
+  border-top-left-radius: 75px;
+}
+
+.cardWrapper {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+}
+.card {
+  flex: 1;
+  width: 75%;
+  border-radius: 24px;
+}
+
+:export {
+  paleBlue: $paleBlue;
+  lightSeaGreen: $lightSeaGreen;
+}

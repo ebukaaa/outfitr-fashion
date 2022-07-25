@@ -1,0 +1,30 @@
+@import "styles/utils";
+
+.content {
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+}
+
+.successful {
+  @include useColor($lightSeaGreen, 0.2);
+  $size: 64px;
+  width: $size;
+  height: $size;
+  border-radius: 75px;
+  justify-content: center;
+  align-items: center;
+}
+.icon {
+  @include useColor($lightSeaGreen, $type: color);
+}
+
+.title {
+  @include useHeading("sub");
+  text-align: center;
+  padding: 18px 8% 0 8%;
+}
+.body {
+  @include useBody;
+  padding: 18px 0;
+}
