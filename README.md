@@ -1,2 +1,2 @@
-# outfitr-fashion
+# Fashion App
 Using Outfitr UI design
