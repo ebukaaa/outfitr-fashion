@@ -3,20 +3,20 @@
 .content {
   justify-content: center;
   align-items: center;
-  background-color: white;
+  background: white;
 }
 
 .successful {
-  @include useColor($lightSeaGreen, 0.2);
   $size: 64px;
   width: $size;
   height: $size;
-  border-radius: 75px;
+  background: rgba($lightSeaGreen, 0.2);
+  border-radius: $border-radius;
   justify-content: center;
   align-items: center;
 }
 .icon {
-  @include useColor($lightSeaGreen, $type: color);
+  color: $lightSeaGreen;
 }
 
 .title {

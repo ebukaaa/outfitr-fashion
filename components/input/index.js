@@ -2,8 +2,30 @@ import { forwardRef, useState } from "react";
 import { TextInput, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { arrayOf, bool, func, string } from "prop-types";
-import className from "./style.module.scss";
+import styleName from "./style.module.scss";
 
+const onCheckText = (
+  placeholder,
+  validate,
+  onValidate,
+  { nativeEvent: { text } }
+) => {
+  if (!text) {
+    validate((old) => (old === undefined ? old : undefined));
+    return;
+  }
+
+  function validity(old) {
+    const isValid = onValidate(text.trim());
+    return old === isValid ? old : isValid;
+  }
+
+  if (placeholder.match("password")) {
+    setTimeout(validate, 500, validity);
+    return;
+  }
+  validate(validity);
+};
 export const Input = forwardRef(function useInput(
   {
     style,
@@ -22,15 +44,15 @@ export const Input = forwardRef(function useInput(
   const [isValid, validate] = useState();
 
   return (
-    <View style={[className.input, className[`${isValid}Tint`], style]}>
+    <View style={[styleName.input, styleName[`${isValid}Tint`], style]}>
       <MaterialIcons
         name={icon}
         size={15}
-        style={className[`${isValid}Icon`]}
+        style={styleName[`${isValid}Icon`]}
       />
 
       <TextInput
-        style={className.text}
+        style={styleName.text}
         ref={ref}
         placeholder={placeholder}
         placeholderTextColor="rgba(21,22,36,0.5)"
@@ -39,13 +61,8 @@ export const Input = forwardRef(function useInput(
         autoCapitalize={!autoCapitalize ? "none" : autoCapitalize}
         secureTextEntry={!!placeholder.match("password")}
         returnKeyType={returnKeyType}
-        onBlur={Input.onCheckText.bind(this, placeholder, validate, onValidate)}
-        onChange={Input.onCheckText.bind(
-          this,
-          placeholder,
-          validate,
-          onValidate
-        )}
+        onBlur={onCheckText.bind(this, placeholder, validate, onValidate)}
+        onChange={onCheckText.bind(this, placeholder, validate, onValidate)}
         onChangeText={onChangeText && onChangeText.bind(this, textContentType)}
         onSubmitEditing={onSubmitEditing}
       />
@@ -54,7 +71,7 @@ export const Input = forwardRef(function useInput(
         <MaterialIcons
           name={isValid ? "check-circle" : isValid === false && "cancel"}
           size={20}
-          style={className[`${isValid}Icon`]}
+          style={styleName[`${isValid}Icon`]}
         />
       )}
     </View>
@@ -82,27 +99,5 @@ Input.defaultProps = {
   onValidate: undefined,
   onChangeText: undefined,
   onSubmitEditing: undefined,
-};
-Input.onCheckText = function onCheckText(
-  placeholder,
-  validate,
-  onValidate,
-  { nativeEvent: { text } }
-) {
-  if (!text) {
-    validate((old) => (old === undefined ? old : undefined));
-    return;
-  }
-
-  function validity(old) {
-    const isValid = onValidate(text.trim());
-    return old === isValid ? old : isValid;
-  }
-
-  if (placeholder.match("password")) {
-    setTimeout(validate, 500, validity);
-    return;
-  }
-  validate(validity);
 };
 export default Input;

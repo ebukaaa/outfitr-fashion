@@ -2,7 +2,7 @@ import { Text } from "react-native";
 import { Button, Input } from "components";
 import validateEmail from "utils/validateEmail";
 import { func } from "prop-types";
-import className from "./style.module.scss";
+import styleName from "./style.module.scss";
 
 const texts = [
   { label: "Forgot password?", style: "title" },
@@ -15,7 +15,7 @@ export default function Forgot({ onChangeView }) {
   return (
     <>
       {texts.map(({ label, style }) => (
-        <Text key={label} style={className[style]}>
+        <Text key={label} style={styleName[style]}>
           {label}
         </Text>
       ))}
@@ -32,7 +32,7 @@ export default function Forgot({ onChangeView }) {
       <Button
         label="Reset password"
         variant="primary"
-        style={className.button}
+        styleButton={styleName.button}
         onPress={onChangeView}
       />
     </>

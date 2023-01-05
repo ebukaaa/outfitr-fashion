@@ -17,7 +17,7 @@
   padding-bottom: 20px;
 }
 .forgot {
-  @include useColor($lightSeaGreen, $type: color);
+  color: $lightSeaGreen;
   font-family: SFProDisplayMedium;
 }
 
@@ -28,9 +28,10 @@
 .checkbox {
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
 }
-.wrapper {
-  @include useColor($lightSeaGreen, $type: "border");
+.icon {
+  border: $lightSeaGreen;
   $size: 18px;
   height: $size;
   width: $size;
@@ -38,12 +39,12 @@
   align-items: center;
   border-radius: 2.4px;
   border-width: 1.4px;
-  background-color: transparent;
-}
-.isChecked {
-  @include useColor($lightSeaGreen);
+  background: transparent;
 }
 .text {
   padding-left: 10px;
   font-family: SFProDisplayMedium;
+}
+:export {
+  lightSeaGreen: $lightSeaGreen;
 }

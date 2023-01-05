@@ -8,16 +8,12 @@ import {
   withTiming,
 } from "react-native-reanimated";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { View, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { setStatusBarStyle } from "expo-status-bar";
 import { EvilIcons } from "@expo/vector-icons";
-import { Layout } from "components";
+import { Layout, load } from "components";
 import config from "styles/config";
-import className from "./style.module.scss";
-import Create from "./create";
-import Login from "./login";
-import Forgot from "./forgot";
-import Successful from "./successful";
+import styleName from "./style.module.scss";
 
 const { Navigator, Screen } = createNativeStackNavigator();
 
@@ -25,8 +21,9 @@ const screenOptions = {
   animation: "fade",
   gestureEnabled: false,
   headerShown: false,
-  contentStyle: className.content,
+  contentStyle: styleName.content,
 };
+const screens = ["Login", "Create", "Forgot", "Successful"];
 export default function Account() {
   const { params: { initialRouteName = "Login" } = {} } = useRoute();
   const { navigate, setOptions } = useNavigation();
@@ -56,7 +53,7 @@ export default function Account() {
   }));
 
   useLayoutEffect(() => {
-    setOptions({ contentStyle: className.account });
+    setOptions({ contentStyle: styleName.account });
     setStatusBarStyle("light");
     return setStatusBarStyle.bind(null, "dark");
   }, [setOptions]);
@@ -73,48 +70,39 @@ export default function Account() {
         screenOptions={screenOptions}
         initialRouteName={initialRouteName}
       >
-        <Screen name="Login" component={Account.Login} />
-        <Screen name="Create" component={Create} />
-        <Screen name="Forgot" component={Account.Forgot} />
-        <Screen name="Successful" component={Account.Successful} />
+        {screens.map((screen) => (
+          <Screen key={screen} name={screen} component={Account[screen]} />
+        ))}
       </Navigator>
     </Layout>
   );
 }
-Account.Login = function L() {
-  return (
-    <Login
-      onChangeView={Account.view.setForgot.bind(
-        null,
-        Account.onChangeView.bind(null, "Forgot", Account.navigate)
-      )}
-    />
-  );
-};
-Account.Forgot = function F() {
-  return (
-    <Forgot
-      onChangeView={Account.onChangeView.bind(
-        null,
-        "Login",
-        Account.navigate,
-        "Successful",
-        Layout.setFooter.bind(
-          null,
-          <View style={className.footer}>
-            <TouchableOpacity style={className.logo} onPress={Account.onGoBack}>
-              <EvilIcons name="close" size={32} />
-            </TouchableOpacity>
-          </View>
+Account.Login = ({ navigation: { navigate } }) =>
+  load(import("./login"), {
+    onChangeView: Account.view.setForgot.bind(
+      null,
+      Account.onChangeView.bind(null, "Forgot", navigate)
+    ),
+  });
+Account.Forgot = ({ navigation: { navigate } }) =>
+  load(import("./forgot"), {
+    onChangeView: Account.onChangeView.bind(
+      null,
+      "Login",
+      navigate,
+      "Successful",
+      () =>
+        Layout.setFooter(
+          <TouchableOpacity style={styleName.logo} onPress={Account.onGoBack}>
+            <EvilIcons name="close" size={32} />
+          </TouchableOpacity>
         )
-      )}
-    />
-  );
-};
-Account.Successful = function S() {
-  return <Successful onChangeView={Account.onGoBack} />;
-};
-Account.animate = function animate({
+    ),
+  });
+Account.Successful = () =>
+  load(import("./successful"), { onChangeView: Account.onGoBack });
+Account.Create = (props) => load(import("./create"), props);
+Account.animate = ({
   borderBottomLeftRadius: {
     value: bottomLeftValue,
     delay: bottomLeftDelay,
@@ -125,7 +113,7 @@ Account.animate = function animate({
   } = {},
   borderTopLeftRadius: { value: topLeftValue, delay: topLeftDelay } = {},
   borderTopRightRadius: { value: topRightValue, delay: topRightDelay } = {},
-}) {
+}) => {
   if (bottomLeftDelay)
     Account.borderBottomLeftRadius.value = withDelay(
       bottomLeftDelay,
@@ -190,17 +178,17 @@ Account.view = {
     callback();
   },
 };
-Account.onChangeView = function onChangeView(
+Account.onChangeView = (
   screen,
   navigate,
   customScreen,
   callback = () => {}
-) {
+) => {
   callback();
   Account.view[String(screen).toLowerCase()]();
   if (navigate) navigate(customScreen || screen);
 };
-Account.onGoBack = function onGoBack() {
+Account.onGoBack = () => {
   Account.view.setLogin(Account.navigate.bind(null, "Login"));
   Layout.setFooter();
 };

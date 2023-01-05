@@ -4,7 +4,7 @@ import { createRef } from "react";
 import { Button, Input, Layout } from "components";
 import validateEmail from "utils/validateEmail";
 import validatePassword from "utils/validatePassword";
-import className from "./style.module.scss";
+import styleName from "./style.module.scss";
 
 const input = {};
 const refs = [createRef(), createRef()];
@@ -52,13 +52,15 @@ const inputs = [
     },
   },
 ];
+const onNavigate = (navigate = () => {}) => navigate("Dashboard");
+const onChangeText = (key, value) => (input[key] = value);
 export default function Create() {
   const { navigate } = useNavigation();
 
   return (
     <>
       {texts.map(({ label, style }) => (
-        <Text key={label} style={className[style]}>
+        <Text key={label} style={styleName[style]}>
           {label}
         </Text>
       ))}
@@ -83,22 +85,17 @@ export default function Create() {
             textContentType={textContentType}
             onSubmitEditing={onSubmitEditing}
             onValidate={onValidate}
-            onChangeText={Create.onChangeText}
+            onChangeText={onChangeText}
           />
         )
       )}
+
       <Button
         label="Create your account"
         variant="primary"
-        style={className.button}
-        onPress={Create.onNavigate.bind(null, navigate)}
+        styleButton={styleName.button}
+        onPress={onNavigate.bind(null, navigate)}
       />
     </>
   );
 }
-Create.onNavigate = function onNavigate(navigate = () => {}) {
-  navigate("Dashboard");
-};
-Create.onChangeText = function onChangeText(key, value) {
-  input[key] = value;
-};

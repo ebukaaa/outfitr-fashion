@@ -1,7 +1,7 @@
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import { Button } from "components";
 import { useNavigation } from "@react-navigation/native";
-import className from "./style.module.scss";
+import styleName from "./style.module.scss";
 
 const { create } = StyleSheet;
 
@@ -20,19 +20,21 @@ const buttons = [
   { label: "Join us, it's Free", initialRouteName: "Create" },
   { label: "Forgot password", initialRouteName: "Forgot", style: "forgot" },
 ];
+const onPress = (navigate, initialRouteName) =>
+  navigate("Account", { initialRouteName });
 export default function Welcome() {
   const { navigate } = useNavigation();
 
   return (
     <>
-      <View style={className.top}>
-        <Text style={[className.header, welcomeStyles.header]}>out</Text>
+      <View style={styleName.top}>
+        <Text style={[styleName.header, welcomeStyles.header]}>out</Text>
       </View>
 
-      <View style={className.bottom}>
-        <View style={className.wrapper}>
+      <View style={styleName.bottom}>
+        <View style={styleName.wrapper}>
           {texts.map(({ style, label }) => (
-            <Text key={label} style={className[style]}>
+            <Text key={label} style={styleName[style]}>
               {label}
             </Text>
           ))}
@@ -41,8 +43,8 @@ export default function Welcome() {
               key={label}
               variant={variant}
               label={label}
-              style={className[style]}
-              onPress={Welcome.onPress.bind(null, navigate, initialRouteName)}
+              styleButton={styleName[style]}
+              onPress={onPress.bind(null, navigate, initialRouteName)}
             />
           ))}
         </View>
@@ -50,6 +52,3 @@ export default function Welcome() {
     </>
   );
 }
-Welcome.onPress = function onPress(navigate, initialRouteName) {
-  navigate("Account", { initialRouteName });
-};

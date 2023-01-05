@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Button } from "components";
 import { func } from "prop-types";
-import className from "./style.module.scss";
+import styleName from "./style.module.scss";
 
 const texts = [
   { label: "Your password was successfully changed", style: "title" },
@@ -14,17 +14,17 @@ export default function Successful({ onChangeView }) {
   const { setOptions } = useNavigation();
 
   useLayoutEffect(() => {
-    setOptions({ contentStyle: className.content });
+    setOptions({ contentStyle: styleName.content });
   }, [setOptions]);
 
   return (
     <>
-      <View style={className.successful}>
-        <FontAwesome5 name="check" size={20} style={className.icon} />
+      <View style={styleName.successful}>
+        <FontAwesome5 name="check" size={20} style={styleName.icon} />
       </View>
 
       {texts.map(({ label, style }) => (
-        <Text key={label} style={className[style]}>
+        <Text key={label} style={styleName[style]}>
           {label}
         </Text>
       ))}

@@ -1,0 +1,49 @@
+@import "styles/utils";
+$svg-height: 28%;
+
+.scroll {
+  background: white;
+}
+.scrollContent {
+  padding: 0 $padding-horizontal $svg-height;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.favourites {
+  flex: 1;
+  align-items: center;
+}
+
+.favourite {
+  width: 100%;
+}
+
+$favourites: $icyLandscape, $slimeLime, #ffe4d9, #ffdddd, $icyLandscape, #f3f0ef,
+  #d5c3bb, #deefc4;
+@for $i from 0 to length($favourites) {
+  .favourite#{$i} {
+    background: nth($favourites, $i + 1);
+    width: 93%;
+    margin: 8px;
+    border-radius: map-get($radii, "m");
+    align-items: flex-end;
+    padding: 10px;
+  }
+}
+
+.button {
+  bottom: 7%;
+  align-self: center;
+}
+.svg {
+  height: $svg-height;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  fill: $cetaceanBlue;
+}
+
+:export {
+  lightSeaGreen: $lightSeaGreen;
+}

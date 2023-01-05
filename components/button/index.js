@@ -1,9 +1,10 @@
 import { Text } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
-import className from "./style.module.scss";
+import styleName from "./style.module.scss";
 
 export default function useButton({
-  style,
+  styleButton,
+  styleLabel,
   label,
   children,
   variant = "secondary",
@@ -11,11 +12,14 @@ export default function useButton({
 }) {
   return (
     <RectButton
-      style={[className.button, className[`${variant}Button`], style]}
+      style={[styleName.button, styleName[`${variant}Button`], styleButton]}
       onPress={onPress}
+      activeOpacity={0.08}
     >
       {children || (
-        <Text style={[className.label, className[`${variant}Label`]]}>
+        <Text
+          style={[styleName.label, styleName[`${variant}Label`], styleLabel]}
+        >
           {label}
         </Text>
       )}

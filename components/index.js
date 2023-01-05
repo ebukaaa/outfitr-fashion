@@ -1,8 +1,7 @@
 import { forwardRef, lazy, Suspense } from "react";
 
-function load(importPath, props) {
+export function load(importPath, props) {
   const Path = lazy(() => importPath);
-
   return (
     <Suspense fallback={null}>
       <Path {...props} />

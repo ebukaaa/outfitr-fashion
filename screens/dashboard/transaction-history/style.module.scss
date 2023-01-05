@@ -1,0 +1,163 @@
+@import "styles/utils";
+
+.body {
+  flex: 0.8;
+  position: relative;
+}
+.bodyOverlay {
+  background: $cetaceanBlue;
+  position: absolute;
+  $size: 100%;
+  height: $size;
+  width: $size;
+  overflow: hidden;
+}
+.bodyCover {
+  position: absolute;
+  bottom: -80px;
+}
+.bodyContent {
+  padding: 15px $padding-horizontal 0;
+  flex: 1;
+  background: white;
+  border-bottom-right-radius: map-get($radii, "xl");
+}
+
+.footer {
+  flex: 0.2;
+}
+.footerContent {
+  flex: 1;
+  border-top-left-radius: map-get($radii, "xl");
+  background: $cetaceanBlue;
+  position: relative;
+  overflow: hidden;
+}
+
+.total {
+  @include useHeading("caption", $color: rgba($cetaceanBlue, 0.38));
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.header {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.price {
+  @include useHeading;
+}
+
+.filterButton {
+  background: rgba($lightSeaGreen, 0.2);
+  $size: 38px;
+  width: 26%;
+  height: $size;
+  border-radius: calc($size / 2);
+}
+.filterLabel {
+  color: $lightSeaGreen;
+}
+
+.graph {
+  flex-direction: row;
+  margin-bottom: 15px;
+}
+
+$axis-height: 20px;
+
+.yAxis {
+  justify-content: center;
+  width: 40px;
+  height: $axis-height;
+  margin: $axis-height 0;
+}
+.graphLabel {
+  color: rgba($cetaceanBlue, 0.38);
+}
+.chart {
+  position: relative;
+  flex: 1;
+}
+.chartLine {
+  margin: $axis-height 0;
+  justify-content: center;
+  height: $axis-height;
+}
+.line {
+  background: rgba($cetaceanBlue, 0.1);
+  height: 1px;
+  width: 100%;
+}
+.xAxis {
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  bottom: 0;
+  position: absolute;
+}
+
+.bar {
+  position: absolute;
+}
+
+$circus: #fe5e33;
+$sunglow: #ffc641;
+$bar-color: $lightSeaGreen, $circus, transparent, $sunglow;
+@for $i from 1 through length($bar-color) {
+  .bar#{$i - 3} {
+    @if $i != length($bar-color) - 1 {
+      background: rgba(nth($bar-color, $i), 0.12);
+    }
+    width: 100%;
+    bottom: calc($axis-height + ($axis-height / 2));
+    border-radius: map-get($radii, "xl") map-get($radii, "xl") 0 0;
+    overflow: hidden;
+  }
+  .marker#{$i - 3} {
+    height: 35px;
+    border-radius: map-get($radii, "xl");
+    background: nth($bar-color, $i);
+  }
+}
+
+.invoice {
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 15px 0;
+}
+.invoiceTitle {
+  margin-bottom: 8px;
+  flex-direction: row;
+  align-items: center;
+}
+.invoiceID {
+  @include useHeading;
+  font-size: 18px;
+}
+.invoiceDetail {
+  color: rgba($cetaceanBlue, 0.38);
+}
+.seeMore {
+  width: 30%;
+  background: transparent;
+}
+
+$tags: $sunglow, $circus, $lightSeaGreen;
+@for $i from 0 to length($tags) {
+  .tag#{$i} {
+    $size: 10px;
+    width: $size;
+    height: $size;
+    border-radius: calc($size / 2);
+    background: nth($tags, $i + 1);
+    margin-right: 8px;
+  }
+}
+
+:export {
+  cetaceanBlue: $cetaceanBlue;
+}
