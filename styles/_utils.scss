@@ -3,35 +3,63 @@ $cetaceanBlue: #0c0d34;
 $redLightNeon: #ff0058;
 $magicMint: #b4eec0;
 $paleBlue: #b1ecf7;
+$icyLandscape: #bfeaf5;
+$slimeLime: #beecc4;
 
-@mixin useColor($name: black, $opacity: 1, $type: background-color) {
-  #{$type}: rgba($name, $opacity);
+$border-radius: 75px;
+$padding-horizontal: 20px;
+$radii: (
+  "s": 4px,
+  "m": 10px,
+  "l": 25px,
+  "xl": 75px,
+);
+
+@mixin useHeaderButton {
+  $size: 44px;
+  height: $size;
+  width: $size;
+  background: #fafafa;
+  justify-content: center;
+  align-items: center;
+  border-radius: 22px;
 }
-@mixin useHeading($style: "main", $font-family: SFProDisplaySemibold) {
-  @include useColor($cetaceanBlue, $type: color);
+
+@mixin useHeading(
+  $style: "main",
+  $font-family: SFProDisplaySemibold,
+  $color: $cetaceanBlue
+) {
+  color: $color;
 
   @if $style == "main" {
     font-size: 28px;
-  } @else {
+  }
+  @if $style== "sub" {
     font-size: 24px;
     line-height: 30px;
+  }
+  @if $style== "caption" {
+    font-size: 12px;
+    line-height: 24px;
   }
   @if $font-family != false {
     font-family: $font-family;
   }
+  @content;
 }
 @mixin useBody {
-  @include useColor($cetaceanBlue, 0.7, $type: color);
+  color: rgba($cetaceanBlue, 0.7);
   font-size: 16px;
   line-height: 24px;
   font-family: SFProDisplayRegular;
 }
-@mixin useTitle {
-  @include useColor(white, $type: color);
+@mixin useTitle($color: white) {
   font-size: 70px;
   line-height: 80px;
   font-family: SFProDisplayBold;
   text-align: center;
+  color: $color;
 }
 @mixin useLabel {
   font-size: 15px;

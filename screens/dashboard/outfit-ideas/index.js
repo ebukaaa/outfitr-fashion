@@ -1,6 +1,6 @@
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { Dimensions, FlatList, Text, View, StyleSheet } from "react-native";
 import { Layout } from "components";
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect } from "react";
 import Animated, {
   Extrapolate,
   interpolate,
@@ -10,104 +10,138 @@ import Animated, {
   useDerivedValue,
   useSharedValue,
   withSpring,
-  withTiming,
 } from "react-native-reanimated";
-import { node, number } from "prop-types";
-import { PanGestureHandler, RectButton } from "react-native-gesture-handler";
+import { number } from "prop-types";
+import {
+  BorderlessButton,
+  PanGestureHandler,
+  RectButton,
+} from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
+import { getDefaultHeaderHeight } from "@react-navigation/elements";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import className from "./style.module.scss";
+import Constants from "expo-constants";
+import { setStatusBarStyle } from "expo-status-bar";
+import styleName from "./style.module.scss";
+import Dashboard from "..";
 
-const feeds = [{ id: "New In", style: "feed" }];
-const cardCount = 3;
-const cards = [...Array(cardCount)];
+const { width, height } = Dimensions.get("window");
+const { create } = StyleSheet;
+
+const categories = ["new", "summer", "activewear", "outlet", "accessories"];
+const cards = [...Array(4)].map((_, i) => i);
+const sizeRatio = 0.18 * width;
+const categoryStyles = create({
+  size: { width: sizeRatio, height: sizeRatio },
+  radius: { borderRadius: sizeRatio / 2 },
+});
+const headerStyle = create({
+  s: [
+    styleName.header,
+    {
+      paddingTop: Constants.statusBarHeight,
+      height: getDefaultHeaderHeight(
+        Dimensions.get("window"),
+        false,
+        Constants.statusBarHeight
+      ),
+    },
+  ],
+}).s;
 export default function OutfitIdeas() {
   const { setOptions, openDrawer } = useNavigation();
 
-  OutfitIdeas.onOpenDrawer = openDrawer;
-
   useLayoutEffect(() => {
     setOptions({
-      headerRight: OutfitIdeas.headerRight,
-      headerLeft: OutfitIdeas.headerLeft,
+      headerShown: false,
+      sceneContainerStyle: styleName.outfitIdeas,
     });
+    setStatusBarStyle("dark");
+    return setStatusBarStyle.bind(null, "light");
   }, [setOptions]);
 
+  OutfitIdeas.current = useSharedValue(0);
+
   return (
-    <State>
+    <>
       <Overlay />
 
-      <View style={className.content}>
-        <View style={className.list}>
+      <View style={headerStyle}>
+        <Dashboard.LeftHeader onPress={openDrawer} />
+
+        <Text style={styleName.title}>outfit ideas</Text>
+
+        <RectButton style={styleName.button} activeOpacity={0.06}>
+          <View style={styleName.badge}>
+            <Text style={styleName.label}>5</Text>
+          </View>
+
+          <MaterialCommunityIcons name="shopping-outline" size={15} />
+        </RectButton>
+      </View>
+
+      <View style={styleName.body}>
+        <View>
           <FlatList
+            contentContainerStyle={styleName.list}
             horizontal
-            data={feeds}
-            renderItem={({ item: { style } }) => (
-              <View style={className[style]} />
+            showsHorizontalScrollIndicator={false}
+            data={categories}
+            renderItem={({ item, index }) => (
+              <BorderlessButton>
+                <View
+                  style={[
+                    styleName[`category-border${index}`],
+                    categoryStyles.size,
+                    categoryStyles.radius,
+                  ]}
+                >
+                  <View
+                    style={[
+                      styleName[`category${index}`],
+                      categoryStyles.radius,
+                    ]}
+                  />
+                </View>
+                <Text style={styleName.categoryText}>{item}</Text>
+              </BorderlessButton>
             )}
           />
         </View>
 
-        <View style={className.cards}>
-          {cards.map((_, index) => (
+        <View style={styleName.cards}>
+          {cards.map((index) => (
             <Card key={index} index={index} />
           ))}
         </View>
       </View>
-    </State>
+    </>
   );
 }
-OutfitIdeas.headerLeft = function useHeaderLeft() {
-  return (
-    <View style={className.headerLeft}>
-      <RectButton
-        onPress={OutfitIdeas.onOpenDrawer}
-        style={className.button}
-        activeOpacity={0.06}
-      >
-        <View style={className.bar} />
-        <View style={[className.bar, className.bottomBar]} />
-      </RectButton>
-    </View>
-  );
-};
-OutfitIdeas.headerRight = function useHeaderRight() {
-  return (
-    <View style={className.headerRight}>
-      <RectButton style={className.button} activeOpacity={0.06}>
-        <View style={className.badge}>
-          <Text style={className.label}>5</Text>
-        </View>
-
-        <MaterialCommunityIcons name="shopping-outline" size={15} />
-      </RectButton>
-    </View>
-  );
-};
 
 const views = ["top", "bottom", "content"];
 function Overlay() {
   return (
-    <>
-      <View style={className.header}>
+    <View style={styleName.overlay}>
+      <View style={styleName.overlayHeader}>
         {views.map((style) => (
           <View
             key={style}
-            style={[className[style], className[`${style}Overlay`]]}
+            style={[styleName[style], styleName[`${style}Overlay`]]}
           />
         ))}
       </View>
 
-      <View style={className.body}>
+      <View style={styleName.overlayBody}>
         {views.map(
           (style) =>
             style !== "bottom" && (
               <View
                 key={`${style}Body`}
                 style={[
-                  className[style],
-                  className[`${style}Overlay`],
-                  className[`${style}Body`],
+                  styleName[style],
+                  styleName[`${style}Overlay`],
+                  styleName[`${style}Body`],
                 ]}
               >
                 {style === "content" &&
@@ -116,8 +150,8 @@ function Overlay() {
                       coverStyle !== "content" && (
                         <Layout.Cover
                           key={`${coverStyle}Cover`}
-                          style={className[`${coverStyle}Cover`]}
-                          backgroundFill={className.paleBlue}
+                          style={styleName[`${coverStyle}Cover`]}
+                          backgroundFill={styleName.paleBlue}
                         />
                       )
                   )}
@@ -126,33 +160,24 @@ function Overlay() {
         )}
       </View>
 
-      <View style={className.footer}>
-        <Layout.Cover style={className.coverFooter} />
-        <View style={className.contentFooter} />
+      <View style={styleName.overlayFooter}>
+        <Layout.Cover style={styleName.coverFooter} />
+        <View style={styleName.contentFooter} />
       </View>
-    </>
+    </View>
   );
 }
 
-function State({ children }) {
-  [State.index, State.setIndex] = useState(0);
-  State.animatedIndex = withTiming(State.index);
-  return <View style={className.outfitIdeas}>{children}</View>;
-}
-State.propTypes = { children: node.isRequired };
-
-const colors = ["#c9e9e7", "#74bcb8"];
-const step = 1 / (cardCount - 1);
+const colors = [styleName.polishedAqua, styleName.tahitianSky];
+const step = 1 / (cards.length - 1);
 function Card({ index }) {
-  const cardStyle = StyleSheet.create({
-    style: { paddingTop: index * 28 },
-  }).style;
-
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
+
   const position = useDerivedValue(
-    () => index * step - State.animatedIndex().current
+    () => index * step - OutfitIdeas.current.value
   );
+  const top = useDerivedValue(() => position.value * 120);
 
   const animatedCard = useAnimatedStyle(() => ({
     transform: [
@@ -160,7 +185,7 @@ function Card({ index }) {
         scale: interpolate(
           position.value,
           [-0.5, 1.5],
-          [0.6, 1],
+          [0.3, 1],
           Extrapolate.CLAMP
         ),
       },
@@ -168,28 +193,54 @@ function Card({ index }) {
       { translateY: translateY.value },
     ],
     backgroundColor: interpolateColor(position.value, [0, 1], colors),
+    top: top.value,
   }));
   const onGestureEvent = useAnimatedGestureHandler({
     onStart(_, context) {
       context.x = translateX.value;
       context.y = translateY.value;
     },
-    onActive({ translationX, translationY }, context) {
-      translateX.value = translationX + context.x;
-      translateY.value = translationY + context.y;
+    onActive({ translationX, translationY }, { x, y }) {
+      translateX.value = translationX + x;
+      translateY.value = translationY + y;
     },
-    onEnd({ velocityX, velocityY }) {
-      translateY.value = withSpring(0, { velocity: velocityY });
-      translateX.value = withSpring(0, { velocity: velocityX });
+    onEnd({ translationX, translationY }) {
+      if (position.value !== 1) {
+        translateY.value = withSpring(0);
+        translateX.value = withSpring(0);
+        return;
+      }
+
+      if (translationX < -width / 9) {
+        translateX.value = withSpring(-width - index - 10);
+        OutfitIdeas.current.value = withSpring(
+          OutfitIdeas.current.value - step
+        );
+      } else if (translationX > width / 9) {
+        translateX.value = withSpring(width + index + 10);
+        OutfitIdeas.current.value = withSpring(
+          OutfitIdeas.current.value - step
+        );
+      } else translateX.value = withSpring(0);
+
+      if (translationY < -height / 9) {
+        translateY.value = withSpring(-height - index * 30);
+        OutfitIdeas.current.value = withSpring(
+          OutfitIdeas.current.value - step
+        );
+      } else if (translationY > height / 9) {
+        translateY.value = withSpring(height + index + 10);
+        OutfitIdeas.current.value = withSpring(
+          OutfitIdeas.current.value - step
+        );
+      } else translateY.value = withSpring(0);
     },
   });
 
   return (
-    <View style={[className.cardWrapper, cardStyle]}>
-      <PanGestureHandler onGestureEvent={onGestureEvent}>
-        <Animated.View style={[className.card, animatedCard]} />
-      </PanGestureHandler>
-    </View>
+    <PanGestureHandler onGestureEvent={onGestureEvent}>
+      <Animated.View style={[styleName.card, animatedCard]} />
+    </PanGestureHandler>
   );
 }
 Card.propTypes = { index: number.isRequired };

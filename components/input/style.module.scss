@@ -1,4 +1,7 @@
 @import "styles/utils";
+
+$superSilver: #eee;
+
 .input {
   flex-direction: row;
   align-items: center;
@@ -8,16 +11,16 @@
   margin-bottom: 20px;
 }
 .trueTint {
-  @include useColor($lightSeaGreen, $type: border-color);
+  border: $lightSeaGreen;
 }
 .falseTint {
-  @include useColor($redLightNeon, $type: border-color);
+  border: $redLightNeon;
 }
-.normalTint {
-  border-color: #8a8d90;
-}
+// .normalTint {
+//   border: #8a8d90;
+// }
 .undefinedTint {
-  border-color: #eee;
+  border: $superSilver;
 }
 
 .text {
@@ -26,14 +29,20 @@
 }
 
 .trueIcon {
-  @include useColor($lightSeaGreen, $type: color);
+  color: $lightSeaGreen;
 }
 .falseIcon {
-  @include useColor($redLightNeon, $type: color);
+  color: $redLightNeon;
 }
-.normalIcon {
-  color: #8a8d90;
-}
+// .normalIcon {
+//   color: #8a8d90;
+// }
 .undefinedIcon {
-  color: #eee;
+  color: $superSilver;
 }
+
+// :export {
+//   superSilver: #eee;
+//   redLightNeon: $redLightNeon;
+//   lightSeaGreen: $lightSeaGreen;
+// }

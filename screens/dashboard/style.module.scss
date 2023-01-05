@@ -1,18 +1,22 @@
 @import "styles/utils";
 
 .drawer {
-  width: 75%;
+  width: 100%;
   overflow: hidden;
   border-color: transparent;
   border-radius: 0 50px 50px 0;
 }
 .sceneContainer {
-  background-color: white;
+  background: white;
+  flex: 1;
 }
 .headerTitle {
   text-transform: uppercase;
   font-family: SFProDisplayBold;
   letter-spacing: 2px;
+}
+.headerContainer {
+  padding: 0 $padding-horizontal;
 }
 
 .drawerContent {
@@ -20,9 +24,9 @@
 }
 
 .header {
-  @include useColor($cetaceanBlue);
+  background: $cetaceanBlue;
   flex: 0.2;
-  border-bottom-right-radius: 75px;
+  border-bottom-right-radius: $border-radius;
   border-color: transparent;
   flex-direction: row;
   justify-content: space-around;
@@ -31,7 +35,7 @@
   text-transform: uppercase;
   color: white;
   font-family: SFProDisplayRegular;
-  letter-spacing: 2;
+  letter-spacing: 2px;
 }
 
 .body {
@@ -39,18 +43,18 @@
   position: relative;
 }
 .profile {
-  @include useColor($magicMint);
+  background: $magicMint;
   border-radius: 50px;
   position: absolute;
   align-self: center;
   z-index: 1;
 }
 .top {
-  @include useColor($cetaceanBlue);
+  background: $cetaceanBlue;
   flex: 0.5;
 }
 .bottom {
-  @include useColor($lightSeaGreen);
+  background: $lightSeaGreen;
   flex: 0.5;
   flex-direction: column-reverse;
   overflow: hidden;
@@ -59,9 +63,8 @@
   top: -28%;
 }
 .content {
-  background-color: white;
-  border-top-left-radius: 75px;
-  border-bottom-right-radius: 75px;
+  background: white;
+  border-radius: $border-radius 0 $border-radius 0;
   padding: 28% 0;
   border-color: transparent;
   align-items: center;
@@ -93,33 +96,39 @@
   color: grey;
 }
 
-.flash {
-  @include useColor($lightSeaGreen);
-}
-.heart {
-  background-color: #ff4e0f;
-}
-.person {
-  background-color: #fec400;
-}
-.time {
-  background-color: #ff7da0;
-}
-.settings {
-  background-color: #4724b5;
-}
-.arrow-undo {
-  @include useColor($cetaceanBlue);
+$icons: (
+  "flash": $lightSeaGreen,
+  "heart": #ff4e0f,
+  "person": #fec400,
+  "time": #ff7da0,
+  "settings": #4724b5,
+  "arrow-undo": $cetaceanBlue,
+);
+@each $name, $color in $icons {
+  .#{$name} {
+    background: $color;
+  }
 }
 .icon {
-  border-radius: 75px;
+  border-radius: $border-radius;
   justify-content: center;
   align-items: center;
 }
 
 .footer {
-  @include useColor($lightSeaGreen);
+  background: $lightSeaGreen;
   flex: 0.05;
   overflow: hidden;
-  border-top-left-radius: 75px;
+  border-top-left-radius: $border-radius;
+}
+.button {
+  @include useHeaderButton;
+}
+.bar {
+  background: black;
+  width: 18px;
+  height: 1.8px;
+}
+.bar2 {
+  margin-top: 4px;
 }

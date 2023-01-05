@@ -1,5 +1,5 @@
 import { Text, View } from "react-native";
-import { createRef, useMemo, useState } from "react";
+import { createRef } from "react";
 import { RectButton } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -7,7 +7,11 @@ import { Button, Input, Layout } from "components";
 import validateEmail from "utils/validateEmail";
 import validatePassword from "utils/validatePassword";
 import { func } from "prop-types";
-import className from "./style.module.scss";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+} from "react-native-reanimated";
+import styleName from "./style.module.scss";
 
 const ref = createRef();
 const texts = [
@@ -40,13 +44,14 @@ const inputs = [
     },
   },
 ];
+const onNavigate = (navigate = () => {}) => navigate("Dashboard");
 export default function Login({ onChangeView }) {
-  Login.navigate = useNavigation().navigate;
+  const { navigate } = useNavigation();
 
   return (
     <>
       {texts.map(({ style, label }) => (
-        <Text key={label} style={className[style]}>
+        <Text key={label} style={styleName[style]}>
           {label}
         </Text>
       ))}
@@ -77,9 +82,9 @@ export default function Login({ onChangeView }) {
         )
       )}
 
-      <View style={className.user}>
+      <View style={styleName.user}>
         <Checkbox />
-        <Text onPress={onChangeView} style={className.forgot}>
+        <Text onPress={onChangeView} style={styleName.forgot}>
           Forgot password
         </Text>
       </View>
@@ -87,34 +92,38 @@ export default function Login({ onChangeView }) {
       <Button
         label="Log into your account"
         variant="primary"
-        style={className.button}
-        onPress={Login.onNavigate}
+        styleButton={styleName.button}
+        onPress={onNavigate.bind(null, navigate)}
       />
     </>
   );
 }
-Login.onNavigate = function onNavigate() {
-  Login.navigate("Dashboard");
-};
 Login.propTypes = { onChangeView: func.isRequired };
 
+const onCheck = (background) => {
+  const newBackground = background;
+  newBackground.value =
+    background.value === "transparent"
+      ? styleName.lightSeaGreen
+      : "transparent";
+};
 function Checkbox() {
-  const [isChecked, check] = useState();
-  const wrapperStyles = useMemo(
-    () => [className.wrapper, isChecked && className.isChecked],
-    [isChecked]
-  );
+  const background = useSharedValue("transparent");
+  const animatedIcon = useAnimatedStyle(() => ({
+    backgroundColor: background.value,
+  }));
 
   return (
     <RectButton
-      style={className.checkbox}
-      onPress={check.bind(null, (old) => !old)}
+      style={styleName.checkbox}
+      onPress={onCheck.bind(null, background)}
       activeOpacity={0}
     >
-      <View style={wrapperStyles}>
+      <Animated.View style={[styleName.icon, animatedIcon]}>
         <MaterialIcons name="check" size={11} color="white" />
-      </View>
-      <Text style={className.text}>Remember me</Text>
+      </Animated.View>
+
+      <Text style={styleName.text}>Remember me</Text>
     </RectButton>
   );
 }

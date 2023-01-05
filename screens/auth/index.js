@@ -2,11 +2,11 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Account from "./account";
 import Onboarding from "./onboarding";
 import Welcome from "./welcome";
-import className from "./style.module.scss";
+import styleName from "./style.module.scss";
 
 const { Navigator, Screen } = createNativeStackNavigator();
 
-const screenOptions = { headerShown: false, contentStyle: className.auth };
+const screenOptions = { headerShown: false, contentStyle: styleName.auth };
 export default function Home() {
   return (
     <Navigator screenOptions={screenOptions}>

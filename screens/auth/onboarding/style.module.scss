@@ -2,7 +2,7 @@
 
 .topScroll {
   height: 61%;
-  border-bottom-right-radius: 75px;
+  border-bottom-right-radius: $border-radius;
   border-color: transparent;
 }
 .bottomScroll {
@@ -18,9 +18,9 @@
   position: absolute;
 }
 .footer {
-  background-color: white;
+  background: white;
   height: 39%;
-  border-top-left-radius: 75px;
+  border-top-left-radius: $border-radius;
   border-color: transparent;
 }
 
@@ -33,7 +33,7 @@
 }
 
 .dot {
-  @include useColor($lightSeaGreen);
+  background: $lightSeaGreen;
   border-radius: 4px;
   height: 6px;
   width: 6px;

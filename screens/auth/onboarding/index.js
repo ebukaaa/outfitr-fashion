@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
 import Animated, {
   Extrapolate,
@@ -13,9 +12,9 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { Button } from "components";
-import { bool, func, number, string } from "prop-types";
+import { bool, func, number, objectOf, string } from "prop-types";
 import { useNavigation } from "@react-navigation/native";
-import className from "./style.module.scss";
+import styleName from "./style.module.scss";
 
 const { create } = StyleSheet;
 const { width } = Dimensions.get("window");
@@ -54,8 +53,13 @@ const sliders = [
     image: "",
   },
 ];
+const onSlide = (index, navigate, slideIndex) => {
+  const newSlideIndex = slideIndex;
+  if (index === sliders.length - 1) navigate("Welcome");
+  else newSlideIndex.value += 1;
+};
 export default function Onboarding() {
-  Onboarding.slideIndex = useSharedValue(0);
+  const slideIndex = useSharedValue(0);
   const { navigate } = useNavigation();
   const { topScrollRef, bottomScrollRef } = {
     topScrollRef: useAnimatedRef(),
@@ -63,15 +67,12 @@ export default function Onboarding() {
   };
   const { progress } = {
     ...useDerivedValue(() => {
-      scrollTo(bottomScrollRef, Onboarding.slideIndex.value * width, 0, true);
-      scrollTo(topScrollRef, Onboarding.slideIndex.value * width, 0, true);
+      scrollTo(bottomScrollRef, slideIndex.value * width, 0, true);
+      scrollTo(topScrollRef, slideIndex.value * width, 0, true);
     }),
     progress: useDerivedValue(
-      () =>
-        withTiming(
-          sliders.map((_, i) => i * width)[Onboarding.slideIndex.value]
-        ),
-      [Onboarding.slideIndex, width]
+      () => withTiming(sliders.map((_, i) => i * width)[slideIndex.value]),
+      [slideIndex, width]
     ),
   };
   const { animatedBackgroundColor, animatedFooter } = {
@@ -93,13 +94,13 @@ export default function Onboarding() {
   const onScroll = useAnimatedScrollHandler({
     onEndDrag({ targetContentOffset: { x } }) {
       if (x === 0) {
-        Onboarding.slideIndex.value = 0;
+        slideIndex.value = 0;
       } else if (x === width) {
-        Onboarding.slideIndex.value = 1;
+        slideIndex.value = 1;
       } else if (x === sliders.map((_, i) => i * width)[2]) {
-        Onboarding.slideIndex.value = 2;
+        slideIndex.value = 2;
       } else if (x === sliders.map((_, i) => i * width)[3]) {
-        Onboarding.slideIndex.value = 3;
+        slideIndex.value = 3;
       }
     },
   });
@@ -112,7 +113,7 @@ export default function Onboarding() {
         scrollEventThrottle={1}
         bounces={false}
         showsHorizontalScrollIndicator={false}
-        style={[className.topScroll, animatedBackgroundColor]}
+        style={[styleName.topScroll, animatedBackgroundColor]}
         snapToInterval={width}
         ref={topScrollRef}
         onEndDrag={onScroll}
@@ -122,10 +123,10 @@ export default function Onboarding() {
         ))}
       </Animated.ScrollView>
 
-      <Animated.View style={[className.bottomScroll, animatedFooter]}>
-        <View style={className.pagination}>
+      <Animated.View style={[styleName.bottomScroll, animatedFooter]}>
+        <View style={styleName.pagination}>
           {sliders.map(({ id }, index) => (
-            <Dot key={id} index={index} />
+            <Dot key={id} index={index} slideIndex={slideIndex} />
           ))}
         </View>
 
@@ -134,7 +135,7 @@ export default function Onboarding() {
           showsHorizontalScrollIndicator={false}
           scrollEnabled={false}
           ref={bottomScrollRef}
-          style={className.footer}
+          style={styleName.footer}
         >
           {sliders.map(({ subtitle, description }, index) => (
             <BottomSlide
@@ -142,7 +143,7 @@ export default function Onboarding() {
               subtitle={subtitle}
               description={description}
               isLast={index === sliders.length - 1}
-              onPress={Onboarding.onSlide.bind(null, index, navigate)}
+              onPress={onSlide.bind(null, index, navigate, slideIndex)}
             />
           ))}
         </ScrollView>
@@ -150,32 +151,26 @@ export default function Onboarding() {
     </>
   );
 }
-Onboarding.onSlide = function onSlide(index, navigate) {
-  if (index === sliders.length - 1) navigate("Welcome");
-  else Onboarding.slideIndex.value += 1;
-};
 
-const topSlideStyles = create({ container: { width } });
+const topSlideStyles = create({ s: [styleName.topSlide, { width }] }).s;
 function TopSlide({ title, isRight }) {
-  const titleStyles = useMemo(
-    () =>
-      create({ style: { left: +`${isRight ? "+" : "-"}${width / 3}` } }).style,
-    [isRight]
-  );
-
   return (
-    <View style={[className.topSlide, topSlideStyles.container]}>
-      <Text style={[className.title, titleStyles]}>{title}</Text>
+    <View style={topSlideStyles}>
+      <Text
+        style={[
+          styleName.title,
+          { left: +`${isRight ? "+" : "-"}${width / 3}` },
+        ]}
+      >
+        {title}
+      </Text>
     </View>
   );
 }
 TopSlide.propTypes = { title: string.isRequired, isRight: bool.isRequired };
 
-function Dot({ index }) {
-  const input = useDerivedValue(
-    () => withTiming(Onboarding.slideIndex.value),
-    []
-  );
+function Dot({ index, slideIndex }) {
+  const input = useDerivedValue(() => withTiming(slideIndex.value), []);
   const animatedDot = useAnimatedStyle(() => ({
     opacity: interpolate(
       input.value,
@@ -195,16 +190,19 @@ function Dot({ index }) {
     ],
   }));
 
-  return <Animated.View style={[className.dot, animatedDot]} />;
+  return <Animated.View style={[styleName.dot, animatedDot]} />;
 }
-Dot.propTypes = { index: number.isRequired };
+Dot.propTypes = {
+  index: number.isRequired,
+  slideIndex: objectOf(number).isRequired,
+};
 
-const bottomSlideStyles = create({ container: { width } });
+const bottomSlideStyles = create({ s: [styleName.bottomSlide, { width }] }).s;
 function BottomSlide({ isLast, subtitle, description, onPress }) {
   return (
-    <View style={[className.bottomSlide, bottomSlideStyles.container]}>
-      <Text style={className.subtitle}>{subtitle}</Text>
-      <Text style={className.description}>{description}</Text>
+    <View style={bottomSlideStyles}>
+      <Text style={styleName.subtitle}>{subtitle}</Text>
+      <Text style={styleName.description}>{description}</Text>
 
       <Button
         label={isLast ? "Let's get started" : "Next"}
